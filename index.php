@@ -11,8 +11,12 @@ if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
     exit;
 }
 
-// Obtener la ruta de la URL
+// Obtener la ruta de la URL (compatible con PHP built-in server)
 $request_uri = $_SERVER["REQUEST_URI"];
+// Eliminar parámetros de consulta si existen
+if (false !== $pos = strpos($request_uri, '?')) {
+    $request_uri = substr($request_uri, 0, $pos);
+}
 $uri_parts = explode("/", trim($request_uri, "/"));
 $route = isset($uri_parts[0]) ? $uri_parts[0] : "";
 $id = isset($uri_parts[1]) ? $uri_parts[1] : null;
@@ -45,34 +49,38 @@ try {
 
         case "products":
             $controller = new ProductController();
-
+            
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 if ($id) {
                     $controller->getById($id);
                 } else {
                     $controller->getAll();
                 }
-            } else if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            } 
+            else if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $data = json_decode(file_get_contents("php://input"), true);
                 $controller->create($data);
-            } else {
+            } 
+            else {
                 Response::error("Método no permitido", 405);
             }
             break;
 
         case "users":
             $controller = new UserController();
-
+            
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 if ($id) {
                     $controller->getById($id);
                 } else {
                     $controller->getAll();
                 }
-            } else if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            } 
+            else if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $data = json_decode(file_get_contents("php://input"), true);
                 $controller->create($data);
-            } else {
+            } 
+            else {
                 Response::error("Método no permitido", 405);
             }
             break;
@@ -84,3 +92,4 @@ try {
 } catch (Exception $e) {
     Response::error($e->getMessage(), 500);
 }
+?>
