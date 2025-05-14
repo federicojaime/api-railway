@@ -1,0 +1,10 @@
+{
+    "name": "mi-api-php-railway",
+    "description": "Una API simple en PHP para probar en Railway",
+    "version": "1.0.0",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4|^8.0"
+    }
+}
